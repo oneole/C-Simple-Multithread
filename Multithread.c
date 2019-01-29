@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 	setbuf(stdout, NULL); // Delete stdout buffer, similar to fflush after printf
 
 	for (curThread = 0; curThread < THREAD_AMOUNT; curThread++) // Run threads
-		pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) &curThread);
+		pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) ( curThread + 1 ));
 	pthread_exit(0);  // Wait for all threads to end (I believe, I need to double check)
 	free(threadIDs);
 	return EXIT_SUCCESS;
@@ -47,7 +47,7 @@ int validateArguments(int argc, char *argv[]) {
 }
 
 void *simpleThread(void *threadArgs) {
-	int which = *((int*)threadArgs);
+	int which = (int)(threadArgs);
 	int num, val;
 
 	for (num = 0; num < 20; num++) {

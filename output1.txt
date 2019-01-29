@@ -1,0 +1,21 @@
+***Thread 1 sees value 0
+***Thread 1 sees value 1
+***Thread 1 sees value 2
+***Thread 1 sees value 3
+***Thread 1 sees value 4
+***Thread 1 sees value 5
+***Thread 1 sees value 6
+***Thread 1 sees value 7
+***Thread 1 sees value 8
+***Thread 1 sees value 9
+***Thread 1 sees value 10
+***Thread 1 sees value 11
+***Thread 1 sees value 12
+***Thread 1 sees value 13
+***Thread 1 sees value 14
+***Thread 1 sees value 15
+***Thread 1 sees value 16
+***Thread 1 sees value 17
+***Thread 1 sees value 18
+***Thread 1 sees value 19
+Thread 1 sees final value 20
