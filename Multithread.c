@@ -73,6 +73,9 @@
 
 #define PTHREAD_SYNC 1  // VARIABLE THAT TOGGLES SYNCHRONIZATION.
 
+#define ASCII_ZERO 48  // The ascii value that corresponds to 0.
+
+#define ASCII_NINE 57 // The ascii value that corresponds to 9.
 
 // Function prototypes
 int validateArguments(int argc, char *argv[]);
@@ -161,12 +164,29 @@ int validateArguments( int length, char *input[] ) {
 	
         int validatedInput = 0;
 
+        char * actualInput = input [ 1 ];
+
+        puts ( actualInput );
+
 	if ( length != EXPECTED_ARGUMENTS )
         {
 		return INVALID_ARGUMENTS;
         }
 	else 
         {
+
+           while ( *actualInput != '\0' )
+           {
+
+              if ( ASCII_ZERO > *actualInput || ASCII_NINE < *actualInput )
+              {
+                  return INVALID_ARGUMENTS;
+              }
+
+              actualInput++; 
+
+           }
+
            validatedInput = atoi( input [ 1 ] );
 
 	   if ( validatedInput <= 0 )
@@ -252,7 +272,12 @@ void * simpleThread( void *threadArgs )
 
 	}
 
-        pthread_barrier_wait( &myBarrier );
+        if ( PTHREAD_SYNC == 1 )
+        {
+
+           pthread_barrier_wait( &myBarrier );
+
+        }
 
 	val = sharedVariable;
 
