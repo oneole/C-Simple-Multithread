@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     // Create and run threads
 	for (curThread = 0; curThread < THREAD_AMOUNT; curThread++)
     {
-	threadNumbers[curThread] = curThread + 1;
+	threadNumbers[curThread] = curThread;
     	if (pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) &threadNumbers[curThread]) != 0) 
     	{
     		printf("Error: Thread could not be created.");
