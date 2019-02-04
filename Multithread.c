@@ -1,4 +1,4 @@
-/********
+ /********
  *
  *      File Name: Multithread.c
  *
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 
             pthread_mutex_init ( &mutexSum, NULL );
 
-            pthread_barrier_init ( &myBarrier, NULL, THREAD_AMOUNT  );
+            pthread_barrier_init ( &myBarrier, NULL, THREAD_AMOUNT );
 
         }
 
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
 
 	for (curThread = 0; curThread < THREAD_AMOUNT; curThread++) // Run threads
         {
-           pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) ( curThread ));
+           pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) ( &curThread ));
         }
 
 	pthread_exit(0);  // Wait for all threads to end
@@ -237,7 +237,7 @@ int validateArguments( int length, char *input[] ) {
  **********************************************/
 void * simpleThread( void *threadArgs ) 
 {
-	int which = ( int ) ( threadArgs );
+	int which = *( (int*) threadArgs);
 	
         int num, val;        
 
