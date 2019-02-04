@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
     #endif
 
 	pthread_t *threadIDs = calloc(THREAD_AMOUNT, sizeof(pthread_t)); // Allocate array of thread IDs
+	int *threadNumbers = calloc(THREAD_AMOUNT, sizeof(int));
 
 	setbuf(stdout, NULL); // Delete stdout buffer, similar to fflush after printf
 
@@ -105,7 +106,8 @@ int main(int argc, char *argv[])
     // Create and run threads
 	for (curThread = 0; curThread < THREAD_AMOUNT; curThread++)
     {
-    	if (pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) (&curThread)) != 0) 
+	threadNumbers[curThread] = curThread + 1;
+    	if (pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) &threadNumbers[curThread]) != 0) 
     	{
     		printf("Error: Thread could not be created.");
     		return(EXIT_FAILURE);
