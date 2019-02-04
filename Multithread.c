@@ -56,25 +56,18 @@
  *      It is known that our program has warnings when we
  *      compile, but it runs fine regardless.
  *
- * ****/
+ ******/
 
 #include <stdio.h> // Includes standard input library for C.
-
 #include <stdlib.h> // Includes the standard library for C.
-
-
 #include <pthread.h> // Includes the pthread library to initialize thread variables.
-
 #include <unistd.h> // Needed on my machine to use usleep().
 
+#define PTHREAD_SYNC  // ENABLED SYNCHRONIZATION - Comment out for unsynchronized execution
+
 #define INVALID_ARGUMENTS -1 // Whenever an invalid argument is found, -1 is returned.
-
 #define EXPECTED_ARGUMENTS 2 // Number of expected arguments from command line input.
-
-#define PTHREAD_SYNC 1  // VARIABLE THAT TOGGLES SYNCHRONIZATION.
-
 #define ASCII_ZERO 48  // The ascii value that corresponds to 0.
-
 #define ASCII_NINE 57 // The ascii value that corresponds to 9.
 
 // Function prototypes
@@ -82,8 +75,10 @@ int validateArguments(int argc, char *argv[]);
 void *simpleThread(void *threadArgs);
 
 // Global pthread variables for the mutex and barrier.
+#ifdef PTHREAD_SYNC
 pthread_mutex_t mutexSum;
 pthread_barrier_t myBarrier;
+#endif
 
 // The shared memory variable the pthreads will be modifying.
 int sharedVariable = 0;
@@ -92,52 +87,52 @@ int main(int argc, char *argv[])
 {
 	const int THREAD_AMOUNT = validateArguments(argc, argv); // Gather cmd line input
 
-
 	if (THREAD_AMOUNT == INVALID_ARGUMENTS) 
-        {
-
-	   printf("Invalid arguments: command line expects 1 argument > 0\n");
-	   
-           printf("e.g. \"./Multithread.out 4\"\n");
-	
-           return EXIT_SUCCESS;
-
+    {
+	  	printf("Invalid arguments: command line expects 1 argument > 0\n");
+	   	printf("e.g. \"./Multithread.out 4\"\n");
+    	return EXIT_FAILURE;
 	}
         
-        // Initializes the variables necessary for synchronization.
-        if ( PTHREAD_SYNC == 1 )
-        {
-
-            pthread_mutex_init ( &mutexSum, NULL );
-
-            pthread_barrier_init ( &myBarrier, NULL, THREAD_AMOUNT );
-
-        }
+    // Initializes the variables necessary for synchronization.
+    #ifdef PTHREAD_SYNC
+    pthread_mutex_init ( &mutexSum, NULL );
+    pthread_barrier_init ( &myBarrier, NULL, THREAD_AMOUNT );
+    #endif
 
 	pthread_t *threadIDs = calloc(THREAD_AMOUNT, sizeof(pthread_t)); // Allocate array of thread IDs
-	
-        int curThread;
 
 	setbuf(stdout, NULL); // Delete stdout buffer, similar to fflush after printf
 
-	for (curThread = 0; curThread < THREAD_AMOUNT; curThread++) // Run threads
-        {
-           pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) ( &curThread ));
-        }
+    int curThread;
 
-	pthread_exit(0);  // Wait for all threads to end
+    // Create and run threads
+	for (curThread = 0; curThread < THREAD_AMOUNT; curThread++)
+    {
+    	if (pthread_create(&threadIDs[curThread], NULL, simpleThread, (void*) (&curThread)) != 0) 
+    	{
+    		printf("Error: Thread could not be created.");
+    		return(EXIT_FAILURE);
+    	}
+    }
+
+    // Wait for threads to be done, and join
+	for (curThread = 0; curThread < THREAD_AMOUNT; curThread++)
+    {
+    	if (pthread_join(threadIDs[curThread], NULL) != 0) 
+    	{
+    		printf("Error: Thread could not be joined.");
+    		return(EXIT_FAILURE);
+    	}
+    }
 
 	free(threadIDs);
 
-        // Removes the varaibles used for synchronization.
-        if ( PTHREAD_SYNC == 1 )
-        {
-
-           pthread_mutex_destroy ( &mutexSum );
-
-           pthread_barrier_destroy ( &myBarrier );
-
-        }
+    // Removes the variables used for synchronization.
+    #ifdef PTHREAD_SYNC
+	pthread_mutex_destroy ( &mutexSum );
+	pthread_barrier_destroy ( &myBarrier );
+    #endif
 
 	return EXIT_SUCCESS;
 }
@@ -160,41 +155,40 @@ int main(int argc, char *argv[])
  *   |           not.
  *   |
  **********************************************/
-int validateArguments( int length, char *input[] ) {
+int validateArguments( int length, char *input[] ) 
+{
 	
-        int validatedInput = 0;
+    int validatedInput = 0;
 
-        char * actualInput = input [ 1 ];
-
-        puts ( actualInput );
+    char * actualInput = input [ 1 ];
 
 	if ( length != EXPECTED_ARGUMENTS )
-        {
+    {
 		return INVALID_ARGUMENTS;
-        }
+    }
 	else 
+    {
+
+        while ( *actualInput != '\0' )
         {
 
-           while ( *actualInput != '\0' )
-           {
+            if ( ASCII_ZERO > *actualInput || ASCII_NINE < *actualInput )
+            {
+                return INVALID_ARGUMENTS;
+            }
 
-              if ( ASCII_ZERO > *actualInput || ASCII_NINE < *actualInput )
-              {
-                  return INVALID_ARGUMENTS;
-              }
+            actualInput++; 
 
-              actualInput++; 
+        }
 
-           }
+        validatedInput = atoi( input [ 1 ] );
 
-           validatedInput = atoi( input [ 1 ] );
-
-	   if ( validatedInput <= 0 )
-           {
-	      return INVALID_ARGUMENTS;
-           }
+        if ( validatedInput <= 0 )
+        {
+	        return INVALID_ARGUMENTS;
+        }
 	
-           return validatedInput;
+        return validatedInput;
 
 	}
 
@@ -237,51 +231,43 @@ int validateArguments( int length, char *input[] ) {
  **********************************************/
 void * simpleThread( void *threadArgs ) 
 {
-	int which = *( (int*) threadArgs);
+	int which = *( (int*) threadArgs); // Thread pointer argument parsed to int
 	
-        int num, val;        
+    int num, val;        
 
 	for (num = 0; num < 20; num++) {
 
-           //Run unsynchronized verssion of threads.
-
-           if ( PTHREAD_SYNC == 0 )
-           {
+        //Run unsynchronized version of threads.
 		if ( random() > RAND_MAX / 2 )
+		{
 			usleep( 500 );
+		}
+
+		#ifdef PTHREAD_SYNC 
+     	pthread_mutex_lock ( &mutexSum );
+        #endif
 
 		val = sharedVariable;
+
 		printf( "***Thread %d sees value %d\n", which, val );
+
 		sharedVariable = val + 1;
 
-          }
-          else //Run synchronized version of threads.
-          {
-
-             pthread_mutex_lock ( &mutexSum );
-
-             val = sharedVariable;
-
-             printf( "***Thread %d sees value %d\n", which, val );
-
-             sharedVariable = val + 1;
-
-             pthread_mutex_unlock ( &mutexSum ); 
-
-          }
+		#ifdef PTHREAD_SYNC 
+     	pthread_mutex_unlock ( &mutexSum );
+        #endif
 
 	}
 
-        if ( PTHREAD_SYNC == 1 )
-        {
-
-           pthread_barrier_wait( &myBarrier );
-
-        }
+	#ifdef PTHREAD_SYNC 
+    pthread_barrier_wait( &myBarrier );
+    #endif
 
 	val = sharedVariable;
 
 	printf( "Thread %d sees final value %d\n", which, val );
+
+	pthread_exit(NULL);
 
 }
 
