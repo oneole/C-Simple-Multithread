@@ -2,7 +2,7 @@ How to run the program:
  
 To run this program please make sure that the makefile is in the same directory as this source file. 
 
-To compile this file just type make.
+To compile this file just type command "make".
 
 
 Another way to compile the file is by typing the following commands:
@@ -16,21 +16,19 @@ Afterwards to execute the program please use the command below followed by a num
  
 For example:
  
-
 ./Multithread.out 1
 
 If the input you provide is not followed by a number the program will give you an error and describe its expected input.
+
 There are two ways to run this program:
 
 Without synchronization of the pthreads:
-To run the program without synchronization make sure that the preproccessed variable PTHREAD_SYNC is set to 0.
+To run the program without synchronization make sure to remove the preproccessed value PTHREAD_SYNC by commeting it out.
  
-PTHREAD_SYNC = 0;
+// #define PTHREAD_SYNC 
 
-To run the program with synchronization make sure that the preproccess variable PTHREAD_SYNC is set to 1.
+To run the program with synchronization make sure that the preproccess value PTHREAD_SYNC is defined.
 
-PTHREAD_SYNC = 1;
+#define PTHREAD_SYNC 
 
 When toggling with synchronization please make sure that you compile the program.
-
-It is known that our program has warnings when we compile, but it runs fine regardless.

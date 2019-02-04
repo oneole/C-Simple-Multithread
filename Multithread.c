@@ -34,27 +34,23 @@
  *      the program will give you an error and describe its
  *      expected input.
  *
- *      There are two ways to ru3n this program:
+ *      There are two ways to run this program:
  *
- *      Without synchronization of the pthreads:
+ *      - Without synchronization of the pthreads:
  *
- *      To run the program without synchronization make
- *      sure that the preproccessed variable PTHREAD_SYNC
- *      is set to 0.
+ *      To run the program without synchronization make sure to remove 
+ *      the preproccessed value PTHREAD_SYNC by commeting it out.
  *
- *      PTHREAD_SYNC = 0;
+ *      // #define PTHREAD_SYNC 
  *
- *      To run the program with synchronization make sure
- *      that the preproccess variable PTHREAD_SYNC is set
- *      to 1.
- *
- *      PTHREAD_SYNC = 1;
- *
- *      When toggling with synchronization please make sure
- *      that you compile the program.
- *
- *      It is known that our program has warnings when we
- *      compile, but it runs fine regardless.
+ *      - With synchronization of the pthreads:
+ * 
+ *      To run the program with synchronization make sure that the preproccess 
+ *      value PTHREAD_SYNC is defined.
+ * 
+ *      #define PTHREAD_SYNC 
+ * 
+ *      When toggling with synchronization please make sure that you compile the program.
  *
  ******/
 
@@ -211,17 +207,17 @@ int validateArguments( int length, char *input[] )
  *   |         the unsynchronized version of it.
  *   |         To access the usynchronized version
  *   |         please make sure the preproccessed
- *   |         varaible PTHREAD_SYNC is set to
- *   |         0 as follows:
+ *   |         varaible PTHREAD_SYNC is disabled
+ *   |         as follows
  *   |
- *   |         PTHREAD_SYNC = 0;
+ *   |         // #define PTHREAD_SYNC
  *   |
  *   |         If you would like to run the 
  *   |         synchronized version then please
  *   |         make sure that the PTHREAD_SYNC
- *   |         variable is set to 1 as follows:
+ *   |         variable is enabled as
  *   |
- *   |         PTHREAD_SYNC = 1;
+ *   |         #define PTHREAD_SYNC 
  *   |
  *   |         Make sure to compile the file
  *   |         everytime the varaibles are
@@ -237,7 +233,6 @@ void * simpleThread( void *threadArgs )
 
 	for (num = 0; num < 20; num++) {
 
-        //Run unsynchronized version of threads.
 		if ( random() > RAND_MAX / 2 )
 		{
 			usleep( 500 );
