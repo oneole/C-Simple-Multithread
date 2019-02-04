@@ -207,7 +207,7 @@ int validateArguments( int length, char *input[] )
  *   |         the unsynchronized version of it.
  *   |         To access the usynchronized version
  *   |         please make sure the preproccessed
- *   |         varaible PTHREAD_SYNC is disabled
+ *   |         variable PTHREAD_SYNC is disabled
  *   |         as follows
  *   |
  *   |         // #define PTHREAD_SYNC
