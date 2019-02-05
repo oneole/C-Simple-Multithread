@@ -5,7 +5,6 @@
  *      Name of team members:
  *
  *      Marcel Riera
- *
  *      Anthony Sanchez-Ayra.
  *
  *
@@ -59,7 +58,7 @@
 #include <pthread.h> // Includes the pthread library to initialize thread variables.
 #include <unistd.h> // Needed on my machine to use usleep().
 
-#define PTHREAD_SYNC  // ENABLED SYNCHRONIZATION - Comment out for unsynchronized execution
+#define PTHREAD_SYNC  // ENABLED SYNCHRONIZATION - Comment out to disable
 
 #define INVALID_ARGUMENTS -1 // Whenever an invalid argument is found, -1 is returned.
 #define EXPECTED_ARGUMENTS 2 // Number of expected arguments from command line input.

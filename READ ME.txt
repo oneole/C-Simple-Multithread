@@ -24,11 +24,10 @@ There are two ways to run this program:
 
 Without synchronization of the pthreads:
 To run the program without synchronization make sure to remove the preproccessed value PTHREAD_SYNC by commeting it out.
- 
 // #define PTHREAD_SYNC 
 
+With synchronization of the pthreads:
 To run the program with synchronization make sure that the preproccess value PTHREAD_SYNC is defined.
-
 #define PTHREAD_SYNC 
 
 When toggling with synchronization please make sure that you compile the program.
